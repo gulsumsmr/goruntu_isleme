@@ -1,0 +1,17 @@
+import cv2
+import numpy as np
+resim = cv2.imread('pirinç.jpeg', cv2.IMREAD_COLOR)
+resim_rgb = cv2.cvtColor(resim, cv2.COLOR_BGR2RGB)  
+gray = cv2.cvtColor(resim, cv2.COLOR_RGB2GRAY)
+_, thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+kernel = np.ones((3, 3), np.uint8)
+opening = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, kernel, iterations=20)
+kontur, _ = cv2.findContours(opening, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+rice_grain_count = len(kontur)
+print(f"Pirinç sayısı: {rice_grain_count}")
+result = resim_rgb.copy()
+cv2.drawContours(result, kontur, -1, (0, 255, 0), 2)
+cv2.imshow('Thresholding Uygulanmis Resim', thresh)
+cv2.imshow('Konturlar', result)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
